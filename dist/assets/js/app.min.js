@@ -1,4 +1,4 @@
-let data = [
+let dataList = [
     {
         "title": "Task title 1",
         "createdAt": "05/08/2022",
@@ -132,17 +132,18 @@ var filterData = {
         );
       },
 
-    listFilterData : function(){
+    listFilterData : function(data){
         data.forEach(function callback(value, index) {
             filterData.createElement(value);
           });
     },
-    init: function(){
-        this.listFilterData();
+    init: function(data){
+        this.listFilterData(data);
     }
 
 }
-filterData.init();
+
+filterData.init(dataList);
 
 
 
