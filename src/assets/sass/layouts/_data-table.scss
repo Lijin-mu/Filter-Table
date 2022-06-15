@@ -1,0 +1,15 @@
+.data-table{
+    width: 100%;
+    height: auto;
+    border-radius: rem(10);
+    overflow: hidden;
+    border: rem(1) solid $primary-color;
+    &__header{
+        background: $primary-color;
+        color: $white-color;
+        padding: rem(5);
+    }
+    .table{
+        margin-bottom: 0;
+    }
+}
