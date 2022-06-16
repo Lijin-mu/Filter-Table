@@ -1,126 +1,3 @@
-let dataList = [
-    {
-        "title": "Task title 1",
-        "createdAt": "05/08/2022",
-        "dueAt": "05/10/2022",
-        "priority": "Low",
-        "milestone": "Milestone 1",
-        "asignee": "Larry",
-        "tags":"tag 1",
-        "status" : "progress"
-    },
-    {
-        "title": "Task title 2",
-        "createdAt": "05/08/2022",
-        "dueAt": "05/10/2022",
-        "priority": "Low",
-        "milestone": "Milestone 2",
-        "asignee": "Baker",
-        "tags":"tag 2",
-        "status" : "progress"
-    },
-    {
-        "title": "Task title 3",
-        "createdAt": "05/08/2022",
-        "dueAt": "05/10/2022",
-        "priority": "Low",
-        "milestone": "Milestone 4",
-        "asignee": "Neone",
-        "tags":"tag 1",
-        "status" : "progress"
-    },
-    {
-        "title": "Task title 4",
-        "createdAt": "05/08/2022",
-        "dueAt": "05/10/2022",
-        "priority": "Low",
-        "milestone": "Milestone 4",
-        "asignee": "Baker",
-        "tags":"tag 2",
-        "status" : "progress"
-    },
-    {
-        "title": "Task title 5",
-        "createdAt": "05/08/2022",
-        "dueAt": "05/10/2022",
-        "priority": "Urgent",
-        "milestone": "Milestone 3",
-        "asignee": "Neone",
-        "tags":"tag 1",
-        "status" : "progress"
-    },
-    {
-        "title": "Task title 6",
-        "createdAt": "05/08/2022",
-        "dueAt": "05/10/2022",
-        "priority": "Urgent",
-        "milestone": "Milestone 4",
-        "asignee": "Larry",
-        "tags":"tag 3",
-        "status" : "pending"
-    },
-    {
-        "title": "Task title 7",
-        "createdAt": "05/08/2022",
-        "dueAt": "05/10/2022",
-        "priority": "Urgent",
-        "milestone": "Milestone 3",
-        "asignee": "Neone",
-        "tags":"tag 1",
-        "status" : "pending"
-    },
-    {
-        "title": "Task title 8",
-        "createdAt": "05/08/2022",
-        "dueAt": "05/10/2022",
-        "priority": "Low",
-        "milestone": "Milestone 3",
-        "asignee": "Larry",
-        "tags":"tag 1",
-        "status" : "done"
-    },
-    {
-        "title": "Task title 9",
-        "createdAt": "05/08/2022",
-        "dueAt": "05/10/2022",
-        "priority": "Low",
-        "milestone": "Milestone 1",
-        "asignee": "Neone",
-        "tags":"tag 3",
-        "status" : "done"
-    },
-    {
-        "title": "Task title 10",
-        "createdAt": "05/08/2022",
-        "dueAt": "05/10/2022",
-        "priority": "Urgent",
-        "milestone": "Milestone 3",
-        "asignee": "Baker",
-        "tags":"tag 1",
-        "status" : "done"
-    },
-    {
-        "title": "Task title 11",
-        "createdAt": "05/08/2022",
-        "dueAt": "05/10/2022",
-        "priority": "High",
-        "milestone": "Milestone 4",
-        "asignee": "Larry",
-        "tags":"tag 3",
-        "status" : "pending"
-    },
-    {
-        "title": "Task title 12",
-        "createdAt": "05/08/2022",
-        "dueAt": "05/10/2022",
-        "priority": "High",
-        "milestone": "Milestone 5",
-        "asignee": "Baker",
-        "tags":"tag 1",
-        "status" : "pending"
-    }
-];
-
 let userArray=["None"];
 let statusArray=["Any"];
 let milestoneArray=["None"];
@@ -188,7 +65,20 @@ var filterData = {
 
 }
 
-filterData.init(dataList);
+async function fetchData() {
+
+    const requestURL = 'database/main-data.json';
+    const request = new Request(requestURL);
+  
+    const response = await fetch(request);
+    const dataFetch = await response.json();
+
+    filterData.init(dataFetch);
+}
+
+fetchData();
+
+
 
 
 

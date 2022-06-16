@@ -117,6 +117,11 @@ function fonts() {
         .pipe(gulp.dest('dist/assets/fonts/'));
 }
 
+function database() {
+    return gulp.src('src/database/*')
+        .pipe(gulp.dest('dist/database/'));
+}
+
 function webfonts() {
     return gulp.src('src/assets/webfonts/*')
         .pipe(gulp.dest('dist/assets/webfonts/'));
@@ -170,6 +175,7 @@ function watchFiles() {
     gulp.watch('src/assets/js/**/*.js', gulp.series(plugins_js, browserSyncReload));
     gulp.watch('src/assets/js/**/*.js', gulp.series(modernizr_js, browserSyncReload));
     gulp.watch('src/assets/img/**/*.*', gulp.series(img));
+    gulp.watch('src/database/*', gulp.series(database, browserSyncReload));
     gulp.watch('src/uploads/**/*.*', gulp.series(uploads));
     gulp.watch('src/assets/img/**/*.*', gulp.series(img_webp));
     gulp.watch('src/uploads/**/*.*', gulp.series(uploads_webp));
@@ -191,7 +197,8 @@ exports.swiper_js = swiper_js;
 exports.plugins_js = plugins_js;
 exports.modernizr_js = modernizr_js;
 exports.fonts = fonts;
+exports.database = database;
 
 exports.del = del;
-exports.serve = gulp.parallel(html, ie_css, app_css, plugins_css, jquery_js, app_js, swiper_js, plugins_js, modernizr_js, fonts, webfonts, img, uploads, img_webp, uploads_webp, watchFiles, serve);
-exports.default = gulp.series(del, html, ie_css, app_css, plugins_css, jquery_js, app_js, swiper_js, plugins_js, modernizr_js, fonts, webfonts, img, uploads, img_webp, uploads_webp);
+exports.serve = gulp.parallel(html, ie_css, app_css, plugins_css, jquery_js, app_js, swiper_js, plugins_js, modernizr_js, fonts, webfonts, database, img, uploads, img_webp, uploads_webp, watchFiles, serve);
+exports.default = gulp.series(del, html, ie_css, app_css, plugins_css, jquery_js, app_js, swiper_js, plugins_js, modernizr_js, fonts,database, webfonts, img, uploads, img_webp, uploads_webp);
