@@ -103,7 +103,6 @@ var filterData = {
         if (tagsFilter != tagsFilterDefault){
             filterArray.tags = tagsFilter;
         }
-        console.log(filterArray);
 
         filterData.removeElement();
 
