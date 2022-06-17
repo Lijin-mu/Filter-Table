@@ -52,7 +52,7 @@ var filterApp = {
     addFilterOption: function (elem,selector,defaultValue) {
         let selectItem = document.querySelector(selector);
         selectItem[0] = new Option(defaultValue);
-        elem.forEach(function(element,key) {
+        elem.forEach((element,key) => {
             selectItem[key + 1] = new Option(element);
         });
     },
