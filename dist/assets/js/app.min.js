@@ -13,7 +13,7 @@ let milestoneFilter;
 let priorityFilter;
 let tagsFilter;
 
-var filterData = {
+var filterApp = {
 
     fetchData :async function(){
         const requestURL = 'database/main-data.json';
@@ -49,7 +49,7 @@ var filterData = {
           }
     },
 
-    addOption: function (elem,selector,defaultValue) {
+    addFilterOption: function (elem,selector,defaultValue) {
         let selectItem = document.querySelector(selector);
         selectItem[0] = new Option(defaultValue);
         elem.forEach(function(element,key) {
@@ -57,28 +57,35 @@ var filterData = {
         });
     },
     
-    itemArray:function(item, array){
+    addFilterValue:function(item, array){
         array.push(item);
     },
 
     filterPopulate : function(tableData){
-        tableData.forEach(function callback(value, index) {
-            filterData.itemArray(value.asignee, userArray);
-            filterData.itemArray(value.status, statusArray);
-            filterData.itemArray(value.milestone, milestoneArray);
-            filterData.itemArray(value.priority, priorityArray);
-            filterData.itemArray(value.tags, tagsArray);
+        tableData.forEach((value) => {
+            filterApp.addFilterValue(value.asignee, userArray);
+            filterApp.addFilterValue(value.status, statusArray);
+            filterApp.addFilterValue(value.milestone, milestoneArray);
+            filterApp.addFilterValue(value.priority, priorityArray);
+            filterApp.addFilterValue(value.tags, tagsArray);
         });
         userArray = [...new Set(userArray)];
         statusArray = [...new Set(statusArray)];
         milestoneArray = [...new Set(milestoneArray)];
         priorityArray = [...new Set(priorityArray)];
         tagsArray = [...new Set(tagsArray)];
-        filterData.addOption(userArray, ".user", "None");
-        filterData.addOption(statusArray, ".status", "Any");
-        filterData.addOption(milestoneArray, ".milestone", "None");
-        filterData.addOption(priorityArray, ".priority", "Any");
-        filterData.addOption(tagsArray, ".tags", "None");
+
+        userArray = userArray.sort();
+        statusArray = statusArray.sort();
+        milestoneArray = milestoneArray.sort();
+        priorityArray = priorityArray.sort();
+        tagsArray = tagsArray.sort();
+
+        filterApp.addFilterOption(userArray, ".user", "None");
+        filterApp.addFilterOption(statusArray, ".status", "Any");
+        filterApp.addFilterOption(milestoneArray, ".milestone", "None");
+        filterApp.addFilterOption(priorityArray, ".priority", "Any");
+        filterApp.addFilterOption(tagsArray, ".tags", "None");
     },
 
     loadData:function(data){
@@ -86,7 +93,7 @@ var filterData = {
         this.filterPopulate(data);
     },
 
-    pupulateFilterData:function(data){
+    FilterData:function(data){
 
         let filterArray = [];
 
@@ -124,29 +131,29 @@ var filterData = {
             fiteredData = fiteredData.filter((a)=>{if(a.tags == filterArray.tags){return a}});
         }
 
-        filterData.populateTable(fiteredData);
+        filterApp.populateTable(fiteredData);
     },
 
     filterSelectHandler:function(data){
         $('.user').on('change', function (e) {
             userFilter = $('.user').val();
-            filterData.pupulateFilterData(data);
+            filterApp.FilterData(data);
         });
         $('.status').on('change', function (e) {
             statusFilter = $('.status').val();
-            filterData.pupulateFilterData(data);
+            filterApp.FilterData(data);
         });
         $('.milestone').on('change', function (e) {
             milestoneFilter = $('.milestone').val();
-            filterData.pupulateFilterData(data);
+            filterApp.FilterData(data);
         });
         $('.priority').on('change', function (e) {
             priorityFilter = $('.priority').val();
-            filterData.pupulateFilterData(data);
+            filterApp.FilterData(data);
         });
         $('.tags').on('change', function (e) {
             tagsFilter = $('.tags').val();
-            filterData.pupulateFilterData(data);
+            filterApp.FilterData(data);
         });
     },
 
@@ -158,7 +165,7 @@ var filterData = {
 
 }
 
-filterData.init();
+filterApp.init();
 
 
 
