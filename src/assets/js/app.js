@@ -1,43 +1,59 @@
-let userArray=["None"];
-let statusArray=["Any"];
-let milestoneArray=["None"];
-let priorityArray=["Any"];
-let tagsArray=["None"];
+let table = document.querySelector(".data-view");
+let userArray =[];
+let statusArray=[];
+let milestoneArray=[];
+let priorityArray=[];
+let tagsArray=[];
 
-let userFilterDefault="None";
-let statusFilterDefault="Any";
-let milestoneFilterDefault="None";
-let priorityFilterDefault="Any";
-let tagsFilterDefault="None";
+let mainData = [];
 
-let userFilter="None";
-let statusFilter="Any";
-let milestoneFilter="None";
-let priorityFilter="Any";
-let tagsFilter="None";
-
+let userFilter;
+let statusFilter;
+let milestoneFilter;
+let priorityFilter;
+let tagsFilter;
 
 var filterData = {
 
-    createElement: function (elem) {
-        $(".data-view").append(
-          $(
-            '<tr><td scope="col">' + elem.title + '</td><td scope="col">' + elem.createdAt + '</td><td scope="col">' + elem.dueAt + '</td><td scope="col">' + elem.priority + '</td><td scope="col">' + elem.milestone + '</td><td scope="col">' + elem.asignee + '</td><td scope="col">' + elem.tags + '</td></tr>'
-          )
-        );
+    fetchData :async function(){
+        const requestURL = 'database/main-data.json';
+        const request = new Request(requestURL);
+        const response = await fetch(request);
+        mainData = await response.json();
     },
 
-    removeElement:function(){
-        $(".data-view").children().remove();
+    populateTable: function (tableData) {
+        table.innerHTML = '';
+        for (let data of tableData) {
+            let row = table.insertRow(-1);
+            let title = row.insertCell(0);
+            title.innerHTML = data.title;
+        
+            let createdAt = row.insertCell(1);
+            createdAt.innerHTML = data.createdAt;
+
+            let dueAt = row.insertCell(2);
+            dueAt.innerHTML = data.dueAt;
+
+            let priority = row.insertCell(3);
+            priority.innerHTML = data.priority;
+
+            let milestone = row.insertCell(4);
+            milestone.innerHTML = data.milestone;
+
+            let asignee = row.insertCell(5);
+            asignee.innerHTML = data.asignee;
+
+            let tags = row.insertCell(6);
+            tags.innerHTML = data.tags;
+          }
     },
 
-    createFilter: function (elem,selector) {
-        elem.forEach(function callback(value) {
-            $(selector).append(
-                $(
-                  '<option>' + value + '</option>'
-                )
-              );
+    addOption: function (elem,selector,defaultValue) {
+        let selectItem = document.querySelector(selector);
+        selectItem[0] = new Option(defaultValue);
+        elem.forEach(function(element,key) {
+            selectItem[key + 1] = new Option(element);
         });
     },
     
@@ -45,138 +61,105 @@ var filterData = {
         array.push(item);
     },
 
-    listFilterData : function(data){
-        data.forEach(function callback(value, index) {
-            filterData.createElement(value);
+    filterPopulate : function(tableData){
+        tableData.forEach(function callback(value, index) {
             filterData.itemArray(value.asignee, userArray);
             filterData.itemArray(value.status, statusArray);
             filterData.itemArray(value.milestone, milestoneArray);
             filterData.itemArray(value.priority, priorityArray);
             filterData.itemArray(value.tags, tagsArray);
         });
-        userArrayTrim = [...new Set(userArray)];
-        statusArrayTrim = [...new Set(statusArray)];
-        milestoneArrayTrim = [...new Set(milestoneArray)];
-        priorityArrayTrim = [...new Set(priorityArray)];
-        tagsArrayTrim = [...new Set(tagsArray)];
-        userArray = userArrayTrim;
-        statusArray = statusArrayTrim;
-        milestoneArray = milestoneArrayTrim;
-        priorityArray = priorityArrayTrim;
-        tagsArray = tagsArrayTrim;
-        filterData.createFilter(userArray, ".user");
-        filterData.createFilter(statusArray, ".status");
-        filterData.createFilter(milestoneArray, ".milestone");
-        filterData.createFilter(priorityArray, ".priority");
-        filterData.createFilter(tagsArray, ".tags");
-    },
-    filterHandler:function(data, filter, defaultValue){
-       filterData.removeElement();
-        data.forEach(function callback(value, index) {
-            if(filter != defaultValue){
-                if ((value.asignee) ==filter){
-                    filterData.createElement(value);
-                }
-            }
-            else{
-                filterData.createElement(value);
-            }
-        });
+        userArray = [...new Set(userArray)];
+        statusArray = [...new Set(statusArray)];
+        milestoneArray = [...new Set(milestoneArray)];
+        priorityArray = [...new Set(priorityArray)];
+        tagsArray = [...new Set(tagsArray)];
+        filterData.addOption(userArray, ".user", "None");
+        filterData.addOption(statusArray, ".status", "Any");
+        filterData.addOption(milestoneArray, ".milestone", "None");
+        filterData.addOption(priorityArray, ".priority", "Any");
+        filterData.addOption(tagsArray, ".tags", "None");
     },
 
-    multipleFilter:function(data){
+    loadData:function(data){
+        this.populateTable(data);
+        this.filterPopulate(data);
+    },
+
+    pupulateFilterData:function(data){
 
         let filterArray = [];
 
-        if (userFilter != userFilterDefault){
+        if (userFilter != "None"){
             filterArray.asignee = userFilter;
         }
-        if (statusFilter != statusFilterDefault){
+        if (statusFilter != "Any"){
             filterArray.status = statusFilter;
         }
-        if (milestoneFilter != milestoneFilterDefault){
+        if (milestoneFilter != "None"){
             filterArray.milestone = milestoneFilter;
         }
-        if (priorityFilter != priorityFilterDefault){
+        if (priorityFilter != "Any"){
             filterArray.priority = priorityFilter;
         }
-        if (tagsFilter != tagsFilterDefault){
+        if (tagsFilter != "None"){
             filterArray.tags = tagsFilter;
         }
 
-        filterData.removeElement();
+        let fiteredData = data;
 
-        function filterItems(data, filterArray) {
-
-            let fdata = data;
-
-            if (filterArray.asignee){
-                fdata = fdata.filter((a)=>{if(a.asignee == filterArray.asignee){return a}});
-            }
-            if (filterArray.status){
-                fdata = fdata.filter((a)=>{if(a.status == filterArray.status){return a}});
-            }
-            if (filterArray.milestone){
-                fdata = fdata.filter((a)=>{if(a.milestone == filterArray.milestone){return a}});
-            }
-            if (filterArray.priority){
-                fdata = fdata.filter((a)=>{if(a.priority == filterArray.priority){return a}});
-            }
-            if (filterArray.tags){
-                fdata = fdata.filter((a)=>{if(a.tags == filterArray.tags){return a}});
-            }
-
-            fdata.forEach(function callback(value, index) {
-                filterData.createElement(value);
-            });
-        
+        if (filterArray.asignee){
+            fiteredData = fiteredData.filter((a)=>{if(a.asignee == filterArray.asignee){return a}});
         }
-        filterItems(data, filterArray);
+        if (filterArray.status){
+            fiteredData = fiteredData.filter((a)=>{if(a.status == filterArray.status){return a}});
+        }
+        if (filterArray.milestone){
+            fiteredData = fiteredData.filter((a)=>{if(a.milestone == filterArray.milestone){return a}});
+        }
+        if (filterArray.priority){
+            fiteredData = fiteredData.filter((a)=>{if(a.priority == filterArray.priority){return a}});
+        }
+        if (filterArray.tags){
+            fiteredData = fiteredData.filter((a)=>{if(a.tags == filterArray.tags){return a}});
+        }
+
+        filterData.populateTable(fiteredData);
     },
 
     filterSelectHandler:function(data){
         $('.user').on('change', function (e) {
             userFilter = $('.user').val();
-            // filterData.filterHandler(data, userFilter, userFilterDefault);
-            filterData.multipleFilter(data);
+            filterData.pupulateFilterData(data);
         });
         $('.status').on('change', function (e) {
             statusFilter = $('.status').val();
-            filterData.multipleFilter(data);
+            filterData.pupulateFilterData(data);
         });
         $('.milestone').on('change', function (e) {
             milestoneFilter = $('.milestone').val();
-            filterData.multipleFilter(data);
+            filterData.pupulateFilterData(data);
         });
         $('.priority').on('change', function (e) {
             priorityFilter = $('.priority').val();
-            filterData.multipleFilter(data);
+            filterData.pupulateFilterData(data);
         });
         $('.tags').on('change', function (e) {
             tagsFilter = $('.tags').val();
-            filterData.multipleFilter(data);
+            filterData.pupulateFilterData(data);
         });
     },
 
-    init: function(data){
-        this.listFilterData(data);
-        this.filterSelectHandler(data);
+    init: async function(){
+        await this.fetchData();
+        this.loadData(mainData);
+        this.filterSelectHandler(mainData);
     }
 
 }
 
-async function fetchData() {
+filterData.init();
 
-    const requestURL = 'database/main-data.json';
-    const request = new Request(requestURL);
-  
-    const response = await fetch(request);
-    const dataFetch = await response.json();
-
-    filterData.init(dataFetch);
-}
-
-fetchData();
 
 
 
