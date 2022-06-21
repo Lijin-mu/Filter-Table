@@ -87,7 +87,6 @@ var filterApp = {
             });
 
             fArray.push(fit);
-            console.log(fArray);
 
         }
 
@@ -99,44 +98,50 @@ var filterApp = {
         this.populateFilter(data);
     },
 
-    FilterData:function(data){
-
-        let filterArray = [];
-
-        if (userFilter != "select"){
-            filterArray.asignee = userFilter;
-        }
-        if (statusFilter != "select"){
-            filterArray.status = statusFilter;
-        }
-        if (milestoneFilter != "select"){
-            filterArray.milestone = milestoneFilter;
-        }
-        if (priorityFilter != "select"){
-            filterArray.priority = priorityFilter;
-        }
-        if (tagsFilter != "select"){
-            filterArray.tags = tagsFilter;
-        }
+    filterData:function(data, filters){
 
         let fiteredData = data;
 
-        if (filterArray.asignee){
-            fiteredData = fiteredData.filter((a)=>{if(a.asignee == filterArray.asignee){return a}});
+        if (filters.asignee ){
+            if(filters.asignee != "select"){
+                fiteredData = fiteredData.filter((a)=>{if(a.asignee == filters.asignee){return a}});
+            } else {
+                null;
+            }
+            
         }
-        if (filterArray.status){
-            fiteredData = fiteredData.filter((a)=>{if(a.status == filterArray.status){return a}});
+        if (filters.status ){
+            if(filters.status != "select"){
+                fiteredData = fiteredData.filter((a)=>{if(a.status == filters.status){return a}});
+            } else {
+                null;
+            }
+            
         }
-        if (filterArray.milestone){
-            fiteredData = fiteredData.filter((a)=>{if(a.milestone == filterArray.milestone){return a}});
+        if (filters.milestone ){
+            if(filters.milestone != "select"){
+                fiteredData = fiteredData.filter((a)=>{if(a.milestone == filters.milestone){return a}});
+            } else {
+                null;
+            }
+            
         }
-        if (filterArray.priority){
-            fiteredData = fiteredData.filter((a)=>{if(a.priority == filterArray.priority){return a}});
+        if (filters.priority ){
+            if(filters.priority != "select"){
+                fiteredData = fiteredData.filter((a)=>{if(a.priority == filters.priority){return a}});
+            } else {
+                null;
+            }
+            
         }
-        if (filterArray.tags){
-            fiteredData = fiteredData.filter((a)=>{if(a.tags == filterArray.tags){return a}});
+        if (filters.tags ){
+            if(filters.tags != "select"){
+                fiteredData = fiteredData.filter((a)=>{if(a.tags == filters.tags){return a}});
+            } else {
+                null;
+            }
+            
         }
-
         filterApp.populateTable(fiteredData);
     },
 
@@ -149,6 +154,7 @@ var filterApp = {
            let selectdValue = $(this).val();
            mainFilter[selectClass]=selectdValue;
            console.log(mainFilter);
+           filterApp.filterData(data, mainFilter);
         });
     },
 

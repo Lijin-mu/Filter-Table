@@ -1,6 +1,4 @@
 let table = document.querySelector(".data-view");
-let filterTable = document.querySelector(".ft-filter");
-
 let userArray =[];
 let statusArray=[];
 let milestoneArray=[];
@@ -8,9 +6,6 @@ let priorityArray=[];
 let tagsArray=[];
 
 let mainData = [];
-
-let selectedFiltersArray = ["asignee","status","milestone","priority","tags"];
-let filters = [];
 
 let userFilter;
 let statusFilter;
@@ -53,69 +48,68 @@ var filterApp = {
             tags.innerHTML = data.tags;
           }
     },
-    populateFilter: function(tableData){  
 
-        let fArray = [];
-
-        for(let k=0;k<selectedFiltersArray.length; k++){
-            let div = document.createElement('div');
-            div.classList.add('ft-filter__item');
-            let label = document.createElement('label');
-            let select = document.createElement('select');
-            select.classList.add('form-select');
-            select.classList.add(selectedFiltersArray[k]);
-            select[0] = new Option("select");
-
-            let text = document.createTextNode(selectedFiltersArray[k]);
-            label.appendChild(text);
-            div.appendChild(label);
-            div.appendChild(select);
-            filterTable.appendChild(div);
-            let fit =[];
-            tableData.forEach((myitem) => {
-                
-                for(let key in myitem){
-                    if(key == selectedFiltersArray[k]){
-                        fit.push(myitem[key]);
-                    }
-                }
-            });
-            fit = [...new Set(fit)];
-            fit = fit.sort();
-            fit.forEach((element,key) => {
-                select[key + 1] = new Option(element);
-            });
-
-            fArray.push(fit);
-            console.log(fArray);
-
-        }
-
+    addFilterOption: function (elem,selector,defaultValue) {
+        let selectItem = document.querySelector(selector);
+        selectItem[0] = new Option(defaultValue);
+        elem.forEach((element,key) => {
+            selectItem[key + 1] = new Option(element);
+        });
+    },
+    
+    addFilterValue:function(item, array){
+        array.push(item);
     },
 
+    filterPopulate : function(tableData){
+        tableData.forEach((value) => {
+            filterApp.addFilterValue(value.asignee, userArray);
+            filterApp.addFilterValue(value.status, statusArray);
+            filterApp.addFilterValue(value.milestone, milestoneArray);
+            filterApp.addFilterValue(value.priority, priorityArray);
+            filterApp.addFilterValue(value.tags, tagsArray);
+        });
+        userArray = [...new Set(userArray)];
+        statusArray = [...new Set(statusArray)];
+        milestoneArray = [...new Set(milestoneArray)];
+        priorityArray = [...new Set(priorityArray)];
+        tagsArray = [...new Set(tagsArray)];
+
+        userArray = userArray.sort();
+        statusArray = statusArray.sort();
+        milestoneArray = milestoneArray.sort();
+        priorityArray = priorityArray.sort();
+        tagsArray = tagsArray.sort();
+
+        filterApp.addFilterOption(userArray, ".user", "None");
+        filterApp.addFilterOption(statusArray, ".status", "Any");
+        filterApp.addFilterOption(milestoneArray, ".milestone", "None");
+        filterApp.addFilterOption(priorityArray, ".priority", "Any");
+        filterApp.addFilterOption(tagsArray, ".tags", "None");
+    },
 
     loadData:function(data){
         this.populateTable(data);
-        this.populateFilter(data);
+        this.filterPopulate(data);
     },
 
     FilterData:function(data){
 
         let filterArray = [];
 
-        if (userFilter != "select"){
+        if (userFilter != "None"){
             filterArray.asignee = userFilter;
         }
-        if (statusFilter != "select"){
+        if (statusFilter != "Any"){
             filterArray.status = statusFilter;
         }
-        if (milestoneFilter != "select"){
+        if (milestoneFilter != "None"){
             filterArray.milestone = milestoneFilter;
         }
-        if (priorityFilter != "select"){
+        if (priorityFilter != "Any"){
             filterArray.priority = priorityFilter;
         }
-        if (tagsFilter != "select"){
+        if (tagsFilter != "None"){
             filterArray.tags = tagsFilter;
         }
 
@@ -141,14 +135,25 @@ var filterApp = {
     },
 
     filterSelectHandler:function(data){
-        let mainFilter = [];
-        $('select').on('change', function (e) {
-           console.log("selected");
-           let selectClass = e.target.classList[1];
-           console.log(selectClass);
-           let selectdValue = $(this).val();
-           mainFilter[selectClass]=selectdValue;
-           console.log(mainFilter);
+        $('.user').on('change', function (e) {
+            userFilter = $('.user').val();
+            filterApp.FilterData(data);
+        });
+        $('.status').on('change', function (e) {
+            statusFilter = $('.status').val();
+            filterApp.FilterData(data);
+        });
+        $('.milestone').on('change', function (e) {
+            milestoneFilter = $('.milestone').val();
+            filterApp.FilterData(data);
+        });
+        $('.priority').on('change', function (e) {
+            priorityFilter = $('.priority').val();
+            filterApp.FilterData(data);
+        });
+        $('.tags').on('change', function (e) {
+            tagsFilter = $('.tags').val();
+            filterApp.FilterData(data);
         });
     },
 

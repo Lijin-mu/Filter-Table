@@ -75,6 +75,20 @@ function app_js() {
         .pipe(gulp.dest('dist/assets/js'));
 }
 
+function filterv1_js() {
+    return gulp.src('src/assets/js/filterv1.js')
+        .pipe(include()).on('error', console.log)
+        .pipe(concat('filterv1.min.js'))
+        .pipe(gulpIf(isProd, uglify({
+          keep_fnames: true,
+          mangle: false,
+          ie8: true,
+          warnings: true,
+          compress: true
+        })))
+        .pipe(gulp.dest('dist/assets/js'));
+}
+
 function swiper_js() {
   return gulp.src('src/assets/js/swiper.js')
       .pipe(include()).on('error', console.log)
@@ -174,6 +188,7 @@ function watchFiles() {
     gulp.watch('src/assets/js/**/*.js', gulp.series(app_js, browserSyncReload));
     gulp.watch('src/assets/js/**/*.js', gulp.series(plugins_js, browserSyncReload));
     gulp.watch('src/assets/js/**/*.js', gulp.series(modernizr_js, browserSyncReload));
+    gulp.watch('src/assets/js/**/*.js', gulp.series(filterv1_js, browserSyncReload));
     gulp.watch('src/assets/img/**/*.*', gulp.series(img));
     gulp.watch('src/database/*', gulp.series(database, browserSyncReload));
     gulp.watch('src/uploads/**/*.*', gulp.series(uploads));
@@ -192,6 +207,7 @@ exports.ie_css = ie_css;
 exports.app_css = app_css;
 exports.plugins_css = plugins_css;
 exports.app_js = app_js;
+exports.filterv1_js = filterv1_js;
 exports.jquery_js = jquery_js;
 exports.swiper_js = swiper_js;
 exports.plugins_js = plugins_js;
@@ -200,5 +216,5 @@ exports.fonts = fonts;
 exports.database = database;
 
 exports.del = del;
-exports.serve = gulp.parallel(html, ie_css, app_css, plugins_css, jquery_js, app_js, swiper_js, plugins_js, modernizr_js, fonts, webfonts, database, img, uploads, img_webp, uploads_webp, watchFiles, serve);
-exports.default = gulp.series(del, html, ie_css, app_css, plugins_css, jquery_js, app_js, swiper_js, plugins_js, modernizr_js, fonts,database, webfonts, img, uploads, img_webp, uploads_webp);
+exports.serve = gulp.parallel(html, ie_css, app_css, filterv1_js, plugins_css, jquery_js, app_js, swiper_js, plugins_js, modernizr_js, fonts, webfonts, database, img, uploads, img_webp, uploads_webp, watchFiles, serve);
+exports.default = gulp.series(del, html, ie_css, app_css, filterv1_js, plugins_css, jquery_js, app_js, swiper_js, plugins_js, modernizr_js, fonts,database, webfonts, img, uploads, img_webp, uploads_webp);
