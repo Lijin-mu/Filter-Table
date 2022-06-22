@@ -1,34 +1,23 @@
 let table = document.querySelector(".data-view");
 let filterTable = document.querySelector(".ft-filter");
-
-let userArray =[];
-let statusArray=[];
-let milestoneArray=[];
-let priorityArray=[];
-let tagsArray=[];
-
-let mainData = [];
-
-let selectedFiltersArray = ["asignee","status","milestone","priority","tags"];
-let filters = [];
-
-let userFilter;
-let statusFilter;
-let milestoneFilter;
-let priorityFilter;
-let tagsFilter;
+let apiData = [];
+let tasksData = [];
+let selectedFiltersArray =[];
 
 var filterApp = {
 
     fetchData :async function(){
-        const requestURL = 'database/main-data.json';
+        const requestURL = 'database/demo-data.json';
         const request = new Request(requestURL);
         const response = await fetch(request);
-        mainData = await response.json();
+        apiData = await response.json();
+        tasksData = apiData.taskData;
+        selectedFiltersArray = apiData.filterBy;
     },
 
     populateTable: function (tableData) {
         table.innerHTML = '';
+
         for (let data of tableData) {
             let row = table.insertRow(-1);
             let title = row.insertCell(0);
@@ -53,109 +42,82 @@ var filterApp = {
             tags.innerHTML = data.tags;
           }
     },
-    populateFilter: function(tableData){  
-
-        let fArray = [];
+    populateFilterDropdowns: function(){  
 
         for(let k=0;k<selectedFiltersArray.length; k++){
-            let div = document.createElement('div');
-            div.classList.add('ft-filter__item');
-            let label = document.createElement('label');
-            let select = document.createElement('select');
-            select.classList.add('form-select');
-            select.classList.add(selectedFiltersArray[k]);
-            select[0] = new Option("select");
-
-            let text = document.createTextNode(selectedFiltersArray[k]);
-            label.appendChild(text);
-            div.appendChild(label);
-            div.appendChild(select);
-            filterTable.appendChild(div);
-            let fit =[];
-            tableData.forEach((myitem) => {
-                
-                for(let key in myitem){
-                    if(key == selectedFiltersArray[k]){
-                        fit.push(myitem[key]);
+            let labelValue = selectedFiltersArray[k].label;
+            let selectValue = selectedFiltersArray[k].value;
+            let defaultValue = selectedFiltersArray[k].defaultOption;
+            let filterEnabled = selectedFiltersArray[k].enabled;
+            if (filterEnabled){
+                let div = document.createElement('div');
+                div.classList.add('ft-filter__item');
+                let labelElement = document.createElement('label');
+                let select = document.createElement('select');
+                select.classList.add('form-select');
+                select.classList.add(selectValue);
+                select[0] = new Option(defaultValue);
+    
+                let text = document.createTextNode(labelValue);
+                labelElement.appendChild(text);
+                div.appendChild(labelElement);
+                div.appendChild(select);
+                filterTable.appendChild(div);
+                let dropDownArray =[];
+    
+                tasksData.forEach((myitem) => {
+                    for(let key in myitem){
+                        if(key == selectValue){
+                            dropDownArray.push(myitem[key]);
+                        }
                     }
-                }
-            });
-            fit = [...new Set(fit)];
-            fit = fit.sort();
-            fit.forEach((element,key) => {
-                select[key + 1] = new Option(element);
-            });
-
-            fArray.push(fit);
-            console.log(fArray);
+                });
+                dropDownArray = [...new Set(dropDownArray)];
+                dropDownArray = dropDownArray.sort();
+                dropDownArray.forEach((element,key) => {
+                    select[key + 1] = new Option(element);
+                });
+            }  
 
         }
 
     },
 
-
-    loadData:function(data){
-        this.populateTable(data);
-        this.populateFilter(data);
+    loadData:function(){
+        this.populateTable(tasksData);
+        this.populateFilterDropdowns();
     },
 
-    FilterData:function(data){
-
-        let filterArray = [];
-
-        if (userFilter != "select"){
-            filterArray.asignee = userFilter;
+    populateFilteredData:function(data, filterArray){
+        let fiteredData = data.taskData;
+        let defaultvalues = []
+        for(let k=0;k<selectedFiltersArray.length; k++){
+            let filterEnabled = selectedFiltersArray[k].enabled;
+            if (filterEnabled){
+            let dataValue = selectedFiltersArray[k].value;
+            let defaultOption = selectedFiltersArray[k].defaultOption;
+            if (filterArray[dataValue] && filterArray[dataValue] != defaultOption){
+                fiteredData = fiteredData.filter((a)=>{if(a[dataValue] == filterArray[dataValue]){return a}});
+            }
         }
-        if (statusFilter != "select"){
-            filterArray.status = statusFilter;
         }
-        if (milestoneFilter != "select"){
-            filterArray.milestone = milestoneFilter;
-        }
-        if (priorityFilter != "select"){
-            filterArray.priority = priorityFilter;
-        }
-        if (tagsFilter != "select"){
-            filterArray.tags = tagsFilter;
-        }
-
-        let fiteredData = data;
-
-        if (filterArray.asignee){
-            fiteredData = fiteredData.filter((a)=>{if(a.asignee == filterArray.asignee){return a}});
-        }
-        if (filterArray.status){
-            fiteredData = fiteredData.filter((a)=>{if(a.status == filterArray.status){return a}});
-        }
-        if (filterArray.milestone){
-            fiteredData = fiteredData.filter((a)=>{if(a.milestone == filterArray.milestone){return a}});
-        }
-        if (filterArray.priority){
-            fiteredData = fiteredData.filter((a)=>{if(a.priority == filterArray.priority){return a}});
-        }
-        if (filterArray.tags){
-            fiteredData = fiteredData.filter((a)=>{if(a.tags == filterArray.tags){return a}});
-        }
-
         filterApp.populateTable(fiteredData);
     },
 
     filterSelectHandler:function(data){
-        let mainFilter = [];
+        let filterValueArray = [];
         $('select').on('change', function (e) {
-           console.log("selected");
            let selectClass = e.target.classList[1];
-           console.log(selectClass);
            let selectdValue = $(this).val();
-           mainFilter[selectClass]=selectdValue;
-           console.log(mainFilter);
+           filterValueArray[selectClass]=selectdValue;
+           filterApp.populateFilteredData(data, filterValueArray);
         });
     },
 
     init: async function(){
         await this.fetchData();
-        this.loadData(mainData);
-        this.filterSelectHandler(mainData);
+        this.loadData(apiData);
+        this.filterSelectHandler(apiData);
     }
 
 }
