@@ -192,6 +192,87 @@ var filterApp = {
        
     },
 
+    dataSaveToPdf:function(){
+        window.jsPDF = window.jspdf.jsPDF;
+
+            $('.save-data-pdf').on('click', function (e) {
+
+                // var element = document.querySelector('.data-table');
+                // html2pdf().from(element).save();
+                // var element = document.querySelector('.data-table');
+                // var opt = {
+                // margin:       1,
+                // filename:     'myfile.pdf',
+                // html2canvas:  { scale: 2 },
+                // jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+                // };
+                
+                // New Promise-based usage:
+                // html2pdf().from(element).set(opt).save();
+
+
+                // const options = {
+                //     orientation: "landscape",
+                //     unit: "px",
+                // }
+                // pdfConf = {
+                //     pagesplit: false,
+                //     background: '#fff'
+                //   };
+
+                // const doc = new jsPDF();
+                // let htmlel = $(".data-table").html();
+                // doc.html(htmlel, {
+                //     callback: function (doc) {
+                //         debugger;
+                //       doc.save();
+                //     }
+                //  });
+
+                // const pdf = new jsPDF('l', 'px', [1200, 1210], true);
+                // // const pdf = new jsPDF('portrait', 'pt', 'a4', true);
+               
+
+                //  pdf.html(document.querySelector('.data-table'), {
+                //     callback: function (doc) {
+                //         doc.deletePage(2-8);
+                //       doc.save();
+
+                //     },
+                //     x: 10,
+		        //     y: 10
+                //   }) 
+                
+          
+                    // const input = document.querySelector('.data-table');
+                
+                    // html2canvas(input)
+                    //     .then((canvas) => {
+                    //         const imgData = canvas.toDataURL('image/png');
+                    //         const pdf = new jsPDF('l', 'mm', 'a4', false);
+                    //         var width = pdf.internal.pageSize.getWidth();
+                    //         var height = pdf.internal.pageSize.getHeight();
+                    //         let htmlel = $(".data-table").html();
+                    //         pdf.html(htmlel, {
+                    //             callback: function (doc) {
+                    //             doc.save("test.pdf");
+                    //             }
+                    //         });
+                    //     });
+
+                    let doc = new jsPDF("p", "pt", "a4");
+                    let html =document.querySelector('.data-table').innerHTML;
+                    
+                     doc.html(html);
+                    doc.save("call.pdf");
+        
+
+               
+
+            });
+        
+    },
+
     FilterData:function(data){
 
         let filterArray = [];

@@ -6,16 +6,15 @@
   <title>Page Title</title>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <link rel="icon" type="image/png" href="assets/img/favicon/favicon.png">
-  <link rel='stylesheet' type='text/css' media='screen' href='assets/css/app.min.css'>
-  <link rel='stylesheet' type='text/css' media='screen' href='assets/css/plugins.min.css'>
-
+  <link rel='stylesheet' type='text/css' href='assets/css/app.min.css'>
+  <link rel='stylesheet' type='text/css' href='assets/css/plugins.min.css'>
 </head>
 <body>
 
   <div class="filter-table">
     <div class="filter-table__header">
       <div class="ft-filter">
-         <!-- filter inner markup-->
+         <!-- filter child item markup-->
        <!-- <div class="ft-filter__item">
           <label>Assigned User</label>
           <select class="user form-select">
@@ -48,7 +47,12 @@
       </div>
     </div>
     <div class="filter-table__footer">
-      <p>&copy 2hats</p>
+      <div class="copy-right">
+        <p>&copy 2hats</p>
+      </div>
+      <div class="output-result">
+        <button class="btn btn-secondary print-data">Print</button>
+      </div>
     </div>
   </div>
   <script src='assets/js/jquery.min.js'></script>

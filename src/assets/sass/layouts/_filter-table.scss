@@ -8,9 +8,16 @@
     box-shadow: 1px 1px 12px 0px rgba(0,0,0,0.16);
 -webkit-box-shadow: 1px 1px 12px 0px rgba(0,0,0,0.16);
 -moz-box-shadow: 1px 1px 12px 0px rgba(0,0,0,0.16);
+@media print {
+    box-shadow: none !important;
+    border:none;
+ }
     &__header{
         border-bottom: rem(1) solid $border-color;
         padding-bottom: rem(15);
+        @media print {
+            display: none !important;
+         }
     }
     &__body{
         padding: rem(10);
@@ -19,6 +26,16 @@
         border-top: rem(1) solid $border-color;
         padding: rem(10);
         text-align: center;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        p, .btn{
+            margin: 0;
+        }
+        @media print {
+            display: none !important;
+         }
     }
 
 }
+

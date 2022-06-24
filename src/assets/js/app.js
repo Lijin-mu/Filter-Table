@@ -17,31 +17,22 @@ var filterApp = {
 
     populateTable: function (tableData) {
         table.innerHTML = '';
-
         for (let data of tableData) {
-            let row = table.insertRow(-1);
-            let title = row.insertCell(0);
-            title.innerHTML = data.title;
-        
-            let createdAt = row.insertCell(1);
-            createdAt.innerHTML = data.createdAt;
-
-            let dueAt = row.insertCell(2);
-            dueAt.innerHTML = data.dueAt;
-
-            let priority = row.insertCell(3);
-            priority.innerHTML = data.priority;
-
-            let milestone = row.insertCell(4);
-            milestone.innerHTML = data.milestone;
-
-            let asignee = row.insertCell(5);
-            asignee.innerHTML = data.asignee;
-
-            let tags = row.insertCell(6);
-            tags.innerHTML = data.tags;
+            let row = table.insertRow(-1); 
+            for(let key in data){
+                if(key != "status"){
+                    let td = row.insertCell();
+                    td.innerHTML = data[key];
+                }
+            }
           }
+          if($(".data-view").is(':empty')){
+            $(".output-result .btn").removeClass("visible");
+        } else{
+            $(".output-result .btn").addClass("visible");
+        }
     },
+
     populateFilterDropdowns: function(){  
 
         for(let k=0;k<selectedFiltersArray.length; k++){
@@ -90,7 +81,6 @@ var filterApp = {
 
     populateFilteredData:function(data, filterArray){
         let fiteredData = data.taskData;
-        let defaultvalues = []
         for(let k=0;k<selectedFiltersArray.length; k++){
             let filterEnabled = selectedFiltersArray[k].enabled;
             if (filterEnabled){
@@ -113,13 +103,19 @@ var filterApp = {
            filterApp.populateFilteredData(data, filterValueArray);
         });
     },
+    dataPrint:function(){
+        $('.print-data').on('click', function (e) {
+            window.print();
+         });
+
+    },
 
     init: async function(){
         await this.fetchData();
         this.loadData(apiData);
         this.filterSelectHandler(apiData);
+        this.dataPrint();
     }
-
 }
 
 filterApp.init();
